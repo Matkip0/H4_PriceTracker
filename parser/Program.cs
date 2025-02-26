@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using parser;
 
-
-Console.WriteLine("Hello, World!");
-
+// Scraper scraper = new Scraper();
+// scraper.GetProductDetails(@"https://www.fcomputer.dk/nintendo-switch-lite-haandholdt-spillekontrolenhed-blaa");

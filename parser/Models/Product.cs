@@ -2,14 +2,16 @@ namespace parser.Models;
 
 public class Product
 {
-    public int Ean { get; private set; }
+    public string Ean { get; private set; }
     public string Name;
-    public string Price;
+    public double Price;
+    public DateTime LastChecked { get; private set; }
 
-    public Product(int ean, string name, string price)
+    public Product(string ean, string name, double price, DateTime lastChecked)
     {
         Ean = ean;
         Name = name;
         Price = price;
+        LastChecked = lastChecked;
     }
 }
