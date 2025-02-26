@@ -5,7 +5,19 @@ namespace parser;
 
 public class Scraper
 {
-    public void GetProductDetails(string html)
+    public List<Product> GetProducts(List<string> sites)
+    {
+        List<Product> productsList = new List<Product>();
+        foreach (var site in sites)
+        {
+            var product = GetProductDetails(site);
+            productsList.Add(product);
+        }
+
+        return productsList;
+    }
+
+    public Product GetProductDetails(string html)
     {
         var website = new HtmlWeb();
         var htmlDoc = website.Load(html);
@@ -22,9 +34,10 @@ public class Scraper
             break;
         }
 
-        Product product = CleanProduct(name, price, ean.InnerText);
         // Console.WriteLine($"Name: {product.Name} \nPrice: {product.Price} \nEAN: {product.Ean}");
         // Console.WriteLine($"Unclean Name: {name} \nUnclean Price: {price} \nUnclean EAN: {ean}"); 
+        Product product = CleanProduct(name, price, ean.InnerText);
+        return product;
     }
 
     /// <summary>
