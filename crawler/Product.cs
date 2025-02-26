@@ -1,7 +1,17 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 
 public class Product
 {
+    private static readonly JsonSerializerSettings SERIALIZER_SETTINGS = new JsonSerializerSettings
+    {
+        ContractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new CamelCaseNamingStrategy()
+        }
+    };
+
     public string Url { get; }
     public long FetchedAt { get; }
 
@@ -13,6 +23,6 @@ public class Product
 
     public override string ToString()
     {
-        return JsonConvert.SerializeObject(this);
+        return JsonConvert.SerializeObject(this, SERIALIZER_SETTINGS);
     }
 }
