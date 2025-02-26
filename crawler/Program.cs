@@ -1,58 +1,41 @@
-﻿using HtmlAgilityPack;
+﻿using System.Xml;
 
 class Program
 {
     static async Task Main(string[] args)
     {
-        var baseUrl = "https://www.fcomputer.dk/computer/baerbar/acer?page=";
-        var pageNumber = 1;
-        var allProductUrls = new List<string>();
+        var sitemapUrls = new List<string>([
+                "https://www.fcomputer.dk/sitemap/dk/sitemap.products1.xml",
+                "https://www.fcomputer.dk/sitemap/dk/sitemap.products2.xml",
+                "https://www.fcomputer.dk/sitemap/dk/sitemap.products3.xml",
+                "https://www.fcomputer.dk/sitemap/dk/sitemap.products4.xml",
+        ]);
 
-        while (true)
+        try
         {
-            var url = baseUrl + pageNumber;
-            Console.WriteLine($"Fetching page {pageNumber}...");
-            var pageContent = await FetchPageContentAsync(url);
-            var productUrls = GetProductUrls(pageContent);
-
-            if (productUrls.Length == 0)
+            HttpClient client = new HttpClient();
+            foreach (var sitemapUrl in sitemapUrls)
             {
-                break;
-            }
+                string xmlContent = await client.GetStringAsync(sitemapUrl);
 
-            allProductUrls.AddRange(productUrls);
-            pageNumber++;
-        }
+                var xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(xmlContent);
 
-        File.WriteAllLines("product_urls.txt", allProductUrls);
-        Console.WriteLine("URLs have been written to product_urls.txt");
-    }
+                var urls = new List<string>();
+                foreach (XmlNode node in xmlDoc.GetElementsByTagName("url"))
+                {
+                    var loc = node["loc"];
+                    if (loc == null) continue;
 
-    static async Task<string> FetchPageContentAsync(string url)
-    {
-        using (var client = new HttpClient())
-        {
-            var response = await client.GetStringAsync(url);
-            return response;
-        }
-    }
+                    urls.Add(loc.InnerText);
+                }
 
-    static string[] GetProductUrls(string htmlContent)
-    {
-        var doc = new HtmlDocument();
-        doc.LoadHtml(htmlContent);
-        var productUrls = new List<string>();
-
-        for (int i = 1; i <= 24; i++)
-        {
-            var node = doc.DocumentNode.SelectSingleNode($"//div[contains(@class, 'related-product-list-wrapper')][{i}]//a");
-
-            if (node != null && node.Attributes.Contains("href"))
-            {
-                productUrls.Add(node.Attributes["href"].Value);
+                Console.WriteLine($"Found {urls.Count} product URLs in {sitemapUrl}.");
             }
         }
-
-        return productUrls.ToArray();
+        catch (Exception e)
+        {
+            Console.WriteLine($"An error occurred: {e.Message}");
+        }
     }
 }
