@@ -8,8 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Confluent.Kafka" Version="2.8.0" />
+      <PackageReference Include="Confluent.SchemaRegistry.Serdes.Avro" Version="2.8.0" />
       <PackageReference Include="HtmlAgilityPack" Version="1.11.73" />
       <PackageReference Include="HtmlAgilityPack.CssSelectors" Version="1.0.2" />
+      <PackageReference Include="kafka-sharp" Version="1.4.3" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.2" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
 </Project>
